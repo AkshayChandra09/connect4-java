@@ -255,7 +255,13 @@ public class EvalFunctions {
 			
 			
 		//left diagonal checking for XXXX or 0000
-		valueX=1; value0=1;
+		
+		for(int i=0;i<1;i+=1){
+			score += function(i,3,i+1,board); 
+			
+		}
+		
+		/*valueX=1; value0=1;
 		int scoreX_L=0, score0_L=0;
 		
 		for(int i=0; i<4; i++){		 
@@ -288,11 +294,87 @@ public class EvalFunctions {
 					}   	
 		        }
 		       score += ((valueX > value0) ? scoreX_L : score0_L);
-		    }
+		    }*/
 
-			//System.out.println("\nTotal Score: "+score);
-			
+			//System.out.println("\nTotal Score: "+score);			
 			return score;
 		}
+	
+	
+	static int function(int z, int y, int count, char[][] board){
+		
+		int valueX=1, value0=1,scoreX_L=0,score0_L=0,score=0;
+		
+		if(count==1){
+			for(int x=0;x<4;x++){
+					for(int i=0+z,j=y+x; i<=y+x && i<5 && j>0;i++,j--){
+						
+						if(board[i][j]=='X' && board[i][j]==board[i+1][j-1] && valueX<4){
+		            		valueX++;
+		            		scoreX_L+= (int)Math.pow(5, valueX)+10;
+		            		if(valueX==4){
+								return scoreX_L;
+							}
+		            	}	
+						
+						else if(board[i][j]=='0' && board[i][j]==board[i+1][j-1] && value0<4){
+							value0++;
+							score0_L -= (int)Math.pow(5, value0)+10;
+							if(value0==4){
+								return score0_L;
+							}
+						}
+						
+						else if(board[i][j]==' '){
+							continue;
+						}
+						
+						
+						else if(board[i][j]!=board[i+1][j-1] && board[i+1][j-1]!=' '){
+							valueX=1; value0=1;
+							scoreX_L=0; score0_L=0;
+							continue;
+						}
+						
+					}  
+				 score += ((valueX > value0) ? scoreX_L : score0_L);		
+			  }
+		}
+		  
+		else{
+		
+			for(int i=0+z,j=y+3; i<=y+3 && i<6 && j>-1;i++,j--){
+				
+				if(board[i][j]=='X' && board[i][j]==board[i+1][j-1] && valueX<4){
+            		valueX++;
+            		scoreX_L+= (int)Math.pow(5, valueX)+10;
+            		if(valueX==4){
+						return scoreX_L;
+					}
+            	}	//end_if
+				
+				else if(board[i][j]=='0' && board[i][j]==board[i+1][j-1] && value0<4){
+					value0++;
+					score0_L -= (int)Math.pow(5, value0)+10;
+					if(value0==4){
+						return score0_L;
+					}
+				}
+				
+				else if(board[i+1][j-1]==' '){
+					continue;
+				}
+				
+				else if(board[i][j]!=board[i+1][j+1] && board[i+1][j+1]!=' '){
+					valueX=1; value0=1;
+					scoreX_L=0; score0_L=0;
+					continue;
+				}		
+			}
+			score += ((valueX > value0) ? scoreX_L : score0_L);	
+		}
+			   	
+		return score;
+	}
 		
 }
