@@ -1,23 +1,27 @@
-import java.util.*;
-import java.lang.*;
-import java.io.*;
-import java.awt.*;
-
-
-import java.util.*;
-import java.lang.*;
-import java.io.*;
-
+/* Connect-Four Game 
+ * by
+ * Akshay Chandrachood (A04742395)
+ * Doti SandhyaRani (A04714047)
+ */
 
 class Board{
 
-	char[][] board = new char[6][7];
+	/* board dimensions */
+
 	private int rows = 6;
 	private int columns = 7;
+	
 	private static final String four_X = "XXXX";
 	private static final String four_0 = "0000";
 	private static String find_str="";
 	
+	/* board char array */
+
+	char[][] board = new char[6][7];
+	private int steps=0;
+	
+	/* board constructor */
+
     public Board(){
     	
     	board = new char[][]{
@@ -31,19 +35,19 @@ class Board{
 
     } 
     
-    public boolean isLegalMove(int column){
+    /* if slot is empty return true */
+
+    public boolean isSlotEmpty(int column){
         return board[0][column]==' ';
-    	//return true;
     }
     
-    //Placing a Move on the board
+    /* Placing a Move on the board */
+    
     public boolean placeMove(int column, char player){ 
-        if(!isLegalMove(column)) {System.out.println("Illegal move!"); return false;}
+        if(!isSlotEmpty(column)) {System.out.println("Illegal move!"); return false;}
         for(int i=5;i>=0;i--){
-        	//System.out.println("i:" + i +" column:" + column);
 
             if(board[i][column] == ' ') {
-            	//System.out.println("i:" + i +" column:" + column);
                 board[i][column] = player;
                 return true;
             }
@@ -51,18 +55,19 @@ class Board{
         return false;
     }
     
-    public void undoMove(int column){
-    	Nodes nodes = new Nodes();
+    /* discard temporary child nodes (pruning) */
+
+    public void discardMove(int column){
         for(int i=0;i<=5;++i){
             if(board[i][column] != ' ') {
                 board[i][column] = ' ';
-                nodes.decr();
                 break;
             }
         }        
     }
     
-    //Printing the board
+    /* Printing the board */
+    
     public void displayBoard(){
         System.out.println();
         System.out.println("\n******************* Displaying Current Board Position ************");
@@ -83,17 +88,7 @@ class Board{
     	return board;
     }
     
-    public boolean isFull(){
-    	for(int i=0;i<rows;i++){
-    		for(int j=0;j<columns;j++){
-    			if(board[i][j]==' '){
-    				return false;
-    			}
-    		}
-    	}
-    	return true;
-    }
-    
+    /* Checking left diagonals for sequence of 4 X's Or 4 O's */
 
     public boolean call_isLeft(char player){
 	
@@ -129,6 +124,7 @@ class Board{
 	}
 
 
+    /* Checking horizontally for sequence of 4 X's Or 4 O's */
 
 	public boolean isHorizontal(char player){
 	
@@ -174,7 +170,8 @@ class Board{
 	        return false;
 	}
 	
-	
+    /* Checking vertically for sequence of 4 X's Or O's */
+
 	public boolean isVertical(char player){
 	    
 		boolean status=false;
@@ -219,6 +216,7 @@ class Board{
 	        return false;
 	}
 	
+    /* Checking Right diagonals for sequence of 4 X's Or O's */
 
 	public boolean call_isRight(char agent){
 
@@ -238,7 +236,6 @@ class Board{
 		char chk=' ';
 				
 		char chk1 = finds.charAt(0);	
-		//System.out.println("\nBoard "+x +" " +y+" chk = "+chk1);
 		
 	    if(check==finds){
 	        return true;
@@ -247,7 +244,6 @@ class Board{
 	    else{
 	    	if(count > 0){
 	        count--;
-	       // System.out.println("\nBoard "+board[x][y]+" chk = "+chk1);
 	        if(board[x][y] == chk1){
 	            check += board[x][y];
 	        }
@@ -260,26 +256,29 @@ class Board{
         return false;
 	}
 	
-
+	
+	/* returns True/False if the palyer has won the game
+	by checking all rows/columns/diagonals for a sequence of >=4 */
+	
 	public boolean isGoal(char c){
-		System.out.println("In goal function " + c);
-			
+				
 		 if(c=='X'){
 		     this.find_str = "XXXX";
 		 }
 		 else {
 		     this.find_str = "0000";
 		 }
-		   
-		    
+		      
 	    if(isVertical(c) || isHorizontal(c) || call_isLeft(c) || call_isRight(c))
 	    {
-	        System.out.println("\n\n********************Player: "+ c +"Won************");
+	        System.out.println("\n\n********************************************");
 	        return true;
 	    }
 	    else{
 	        return false;
 	    }
-	}   
+	}
+
+	
 }
 
